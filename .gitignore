@@ -2,3 +2,6 @@ package-lock.json
 .agents/
 node_modules/
 .env
+.claude/
+.firebase/
+.github/

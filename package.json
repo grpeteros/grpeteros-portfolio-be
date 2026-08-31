@@ -1,9 +1,13 @@
 {
   "name": "grpeteros-portfolio-be",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.ts",
+    "dev": "tsc && node app.ts",
+    "build": "node app.ts"
   },
   "author": "",
   "license": "ISC",
@@ -11,7 +15,8 @@
   "dependencies": {
     "@supabase/server": "^1.4.1",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "firebase": "^12.18.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
