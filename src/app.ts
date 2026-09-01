@@ -1,11 +1,6 @@
 import express, { type Express, type Request, type Response } from 'express';
-import { createClient } from "@supabase/supabase-js";
-
-// const express = require('express');
 import cors from 'cors';
 const app: Express = express();
-
-// const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!);
 
 app.use(cors());
 app.get('/projects', (req: Request, res: Response) => {
@@ -17,5 +12,8 @@ app.get('/projects', (req: Request, res: Response) => {
     ]
   });
 });
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello World Test!');
+});
 
-app.listen(3001);
+app.listen(3000);
