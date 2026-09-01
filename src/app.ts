@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
 const app: Express = express();
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.get('/projects', (req: Request, res: Response) => {
@@ -16,4 +17,6 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World Test!');
 });
 
-app.listen(3000);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
