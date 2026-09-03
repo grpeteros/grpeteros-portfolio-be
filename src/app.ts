@@ -19,7 +19,7 @@ app.get('/projects', async (req: Request, res: Response) => {
   .from('projects')
   .select('*')
   res.send({
-      projects,
+    projects: projects?.sort((a, b) => a.id - b.id) ?? []
   });
 });
 app.get('/', (req: Request, res: Response) => {
