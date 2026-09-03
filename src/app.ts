@@ -15,11 +15,11 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.get('/projects', async (req: Request, res: Response) => {
-  let { data: projectsData, error } = await supabase
+  let { data: projects, error } = await supabase
   .from('projects')
   .select('*')
   res.send({
-      projectsData,
+      projects,
   });
 });
 app.get('/', (req: Request, res: Response) => {
