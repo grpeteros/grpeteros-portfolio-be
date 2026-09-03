@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.ts",
+    "start": "node --env-file=.env src/app.ts",
     "dev": "tsc-watch --onSuccess \"node index.ts\"",
     "build": "tsc"
   },
@@ -13,7 +13,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@supabase/server": "^1.4.1",
+    "@supabase/server": "^1.5.2",
+    "@supabase/supabase-js": "^2.114.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "firebase": "^12.18.0"
