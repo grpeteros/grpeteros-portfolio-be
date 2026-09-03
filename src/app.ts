@@ -25,6 +25,9 @@ app.get('/projects', async (req: Request, res: Response) => {
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World Test!');
 });
+app.get('/dishwashing-liquid-lemon', (req: Request, res: Response) => {
+  res.send({ price: '$2.99' });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
