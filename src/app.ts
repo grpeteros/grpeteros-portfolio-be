@@ -17,7 +17,7 @@ app.use(cors());
 app.get('/projects', async (req: Request, res: Response) => {
   let { data: projects, error } = await supabase
   .from('projects')
-  .select('*')
+  .select('*');
   res.send({
     projects: projects?.sort((a, b) => a.id - b.id) ?? []
   });
@@ -25,8 +25,16 @@ app.get('/projects', async (req: Request, res: Response) => {
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World Test!');
 });
-app.get('/products/dishwashing-liquid-lemon', (req: Request, res: Response) => {
-  res.send({ price: '$2.99' });
+app.get('/products/:name', async (req: Request, res: Response) => {
+  const productName = req.params.name; // Capture the value
+  // console.log(`Received request for product: ${productName}`);
+let { data: product, error } = await supabase
+  .from('products')
+  .select('*').like('product_name', `%${productName}%`);
+  res.send({
+    product: product
+  });
+  
 });
 
 app.listen(port, () => {
