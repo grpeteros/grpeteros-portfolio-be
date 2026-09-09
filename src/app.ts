@@ -27,12 +27,9 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World Test!');
 });
 app.get('/products', async (req: Request, res: Response) => {
-  // console.log(`Received request for product: ${productName}`);
   let { data: products, error } = await supabase
     .from('products')
     .select('*');
-
-    console.log('products:', products);
   res.send({
     products: products
   });
@@ -40,7 +37,6 @@ app.get('/products', async (req: Request, res: Response) => {
 });
 app.get('/products/:name', async (req: Request, res: Response) => {
   const productName = req.params.name; // Capture the value
-  // console.log(`Received request for product: ${productName}`);
   let { data: product, error } = await supabase
     .from('products')
     .select('*').like('product_name', `%${productName}%`);
@@ -49,16 +45,23 @@ app.get('/products/:name', async (req: Request, res: Response) => {
   });
 
 });
+app.get('/sales', async (req: Request, res: Response) => {
+  let { data: sales, error } = await supabase
+    .from('transactions')
+    .select('*').gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+    .lte('created_at', new Date().toISOString());  
+  res.send({
+    transactions: sales
+  });
+
+});
 
 app.post('/cart/finish', async (req: Request, res: Response) => {
   let request = req.body;
-  console.log('Received request for cart finish:', request);
   let total_price = 0.0
   request.cart.forEach((product: any) => {
     total_price += product.product_price * product.product_quantity;
   });
-
-  console.log('Total price calculated:', total_price);
 
   let { error } = await supabase
     .from('transactions')
