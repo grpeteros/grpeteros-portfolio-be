@@ -63,7 +63,7 @@ app.get('/sales/print', async (req: Request, res: Response) => {
     .select('*').gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
     .lte('created_at', new Date().toISOString());
 
-  let sortedData = sales?.sort((a: any, b: any) => b.id - a.id)
+  let sortedData = sales?.sort((a: any, b: any) => b.id - a.id) ?? []
 
   let total_price = 0.0
   let workbook = new ExcelJS.Workbook()
@@ -83,7 +83,7 @@ app.get('/sales/print', async (req: Request, res: Response) => {
   });
 
 
-  worksheet.addRow({ products: 'Total:', total_price: total_price });
+  worksheet.addRow({ products: 'Total:', total_price: `=SUM(C2:C${sortedData.length + 1})` });
 
   res.setHeader('Content-Disposition', 'attachment; filename=' + encodeURIComponent('transactions.xlsx'));
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
