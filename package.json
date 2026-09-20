@@ -16,6 +16,7 @@
     "@supabase/server": "^1.5.2",
     "@supabase/supabase-js": "^2.114.0",
     "cors": "^2.8.6",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "firebase": "^12.18.0"
   },
