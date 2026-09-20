@@ -68,10 +68,10 @@ app.get('/sales/print', async (req: Request, res: Response) => {
   let total_price = 0.0
   let workbook = new ExcelJS.Workbook()
   let worksheet = workbook.addWorksheet('transactions')
-   worksheet.columns = [
+  worksheet.columns = [
     { header: 'Date', key: 'created_at', width: 20 },
     { header: 'Products', key: 'products', width: 30 },
-    { header: 'Total Price', key: 'total_price', width: 20 },
+    { header: 'Sales', key: 'total_price', width: 20 },
   ];
 
   sortedData?.map((transaction) => {
@@ -85,9 +85,9 @@ app.get('/sales/print', async (req: Request, res: Response) => {
 
   worksheet.addRow({ products: 'Total:', total_price: total_price });
 
-  res.setHeader('Content-Disposition', 'attachment; filename='  + encodeURIComponent('transactions.xlsx'));
+  res.setHeader('Content-Disposition', 'attachment; filename=' + encodeURIComponent('transactions.xlsx'));
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  
+
   await workbook.xlsx.write(res).then(() => {
     res.status(200).end();
   });
