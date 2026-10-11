@@ -50,18 +50,29 @@ app.get('/sales', async (req: Request, res: Response) => {
   let { data: sales, error } = await supabase
     .from('transactions')
     .select('*').gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
-    .lte('created_at', new Date().toISOString());
+    .lte('created_at', new Date(new Date()).toISOString());
+  res.send({
+    transactions: sales
+  });
+
+});
+app.post('/sales', async (req: Request, res: Response) => {
+  console.log('Received request body:', req.body);
+  let { data: sales, error } = await supabase
+    .from('transactions')
+    .select('*').gte('created_at', new Date(req.body.startDate as string).toISOString())
+    .lte('created_at', new Date(req.body.endDate as string).toISOString());
   res.send({
     transactions: sales
   });
 
 });
 
-app.get('/sales/print', async (req: Request, res: Response) => {
+app.post('/sales/print', async (req: Request, res: Response) => {
   let { data: sales, error } = await supabase
     .from('transactions')
-    .select('*').gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
-    .lte('created_at', new Date().toISOString());
+    .select('*').gte('created_at', new Date(req.body.startDate as string).toISOString())
+    .lte('created_at', new Date(req.body.endDate as string).toISOString());
 
   let sortedData = sales?.sort((a: any, b: any) => b.id - a.id) ?? []
 
@@ -76,7 +87,7 @@ app.get('/sales/print', async (req: Request, res: Response) => {
 
   sortedData?.map((transaction) => {
     transaction.products = transaction.products.map((product: any) => {
-      return `${product.product_name} (x${product.product_quantity})`;
+      return `${product.product_name} (x${product.product_quantity}) @ ${product.product_price}/kg`;
     });
     total_price += transaction.total_price;
     worksheet.addRow({ created_at: new Date(transaction.created_at).toLocaleDateString(), products: JSON.stringify(transaction.products), total_price: transaction.total_price });
@@ -96,7 +107,7 @@ app.get('/sales/print', async (req: Request, res: Response) => {
 app.post('/cart/finish', async (req: Request, res: Response) => {
   let request = req.body;
   let total_price = 0.0
-  request.cart.forEach((product: any) => {
+  request.cart?.forEach((product: any) => {
     total_price += product.product_price * product.product_quantity;
   });
 
