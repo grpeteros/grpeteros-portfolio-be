@@ -14,6 +14,14 @@ const supabase = createClient(
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+const getProduct = async (name: string) => {
+  const productName = name; // Capture the value
+  let { data: product, error } = await supabase
+    .from('products')
+    .select('*').eq('product_name', `${productName}`);
+  return { product: product }
+}
+
 app.use(cors());
 app.use(express.json());
 app.get('/projects', async (req: Request, res: Response) => {
@@ -36,14 +44,34 @@ app.get('/products', async (req: Request, res: Response) => {
   });
 
 });
+app.post('/products/add', async (req: Request, res: Response) => {
+  let request = req.body;
+  let isInDB = false;
+
+  await getProduct(String(request.product.product_name)).then(async (prodRes) => {
+    isInDB = (prodRes.product?.length ?? 0) > 0
+    if (isInDB) {
+      res.status(200).json({ error: 'Product already in system!' });
+    } else {
+      let { data, error } = await supabase
+        .from('products')
+        .insert({ product_name: request.product.product_name, product_price: request.product.product_price, product_qty: 100 }).select();
+      if (data === null || error) {
+        return console.error({ message: 'Product already in system!' })
+      } else {
+        return res.status(200).json({ message: 'Transaction completed successfully!' });
+      }
+    }
+  })
+
+
+
+});
 app.get('/products/:name', async (req: Request, res: Response) => {
   const productName = req.params.name; // Capture the value
-  let { data: product, error } = await supabase
-    .from('products')
-    .select('*').like('product_name', `%${productName}%`);
-  res.send({
-    product: product
-  });
+  getProduct(String(productName)).then(async (response) => {
+    res.send({ product: response.product });
+  })
 
 });
 app.get('/sales', async (req: Request, res: Response) => {
@@ -57,7 +85,6 @@ app.get('/sales', async (req: Request, res: Response) => {
 
 });
 app.post('/sales', async (req: Request, res: Response) => {
-  console.log('Received request body:', req.body);
   let { data: sales, error } = await supabase
     .from('transactions')
     .select('*').gte('created_at', new Date(req.body.startDate as string).toISOString())
